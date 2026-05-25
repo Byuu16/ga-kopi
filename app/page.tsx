@@ -27,7 +27,7 @@ export default function GAKopiLandingPage() {
     {
       name: "Kopi Krim",
       price: "10K",
-      image: "/Krim.jpeg",
+      image: "/kopi-krim.jpeg",
     },
     {
       name: "Kopi Aren",
@@ -122,9 +122,24 @@ export default function GAKopiLandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm flex items-center justify-between gap-3">
 
           {/* LOGO */}
-          <h1 className="text-lg sm:text-2xl font-black tracking-widest uppercase leading-none">
-            GA KOPI
-          </h1>
+          <div className="flex items-center gap-3">
+            <img
+              src="/ga-kopi.jpeg"
+              alt="GA Kopi"
+              className="
+                  w-10 h-10 sm:w-12 sm:h-12
+                  object-cover
+                  rounded-full
+                  border border-white/10
+                  bg-white
+                  p-1
+                "
+            />
+
+            <h1 className="text-lg sm:text-2xl font-black tracking-widest uppercase leading-none">
+              GA KOPI
+            </h1>
+          </div>
 
           {/* NAV */}
           <nav className="flex items-center gap-2 sm:gap-3">
@@ -612,13 +627,13 @@ export default function GAKopiLandingPage() {
       <audio ref={audioRef} loop>
         <source src="/Naruto - Afternoon of Konoha.mp3" type="audio/mpeg" />
       </audio>
-      
+
       {/* LIVE ORDER POPUP */}
-        <div className="fixed bottom-24 left-5 z-[9999] flex flex-col gap-3">
-          {liveOrders.map((order) => (
-            <div
-              key={order.id}
-              className={`
+      <div className="fixed bottom-24 left-5 z-[9999] flex flex-col gap-3">
+        {liveOrders.map((order) => (
+          <div
+            key={order.id}
+            className={`
         px-5 py-4
         rounded-2xl
         bg-black/70
@@ -627,25 +642,25 @@ export default function GAKopiLandingPage() {
         shadow-2xl
         min-w-[220px]
         ${order.closing
-                  ? "animate-slideDown"
-                  : "animate-slideUp"
-                }
+                ? "animate-slideDown"
+                : "animate-slideUp"
+              }
       `}
-            >
-              <p className="text-white/60 text-xs">
-                Baru saja order
-              </p>
+          >
+            <p className="text-white/60 text-xs">
+              Baru saja order
+            </p>
 
-              <h3 className="font-bold text-white mt-1">
-                ☕ {order.name}
-              </h3>
+            <h3 className="font-bold text-white mt-1">
+              ☕ {order.name}
+            </h3>
 
-              <p className="text-[#49E46A] text-sm mt-1">
-                {order.time}
-              </p>
-            </div>
-          ))}
-        </div>
+            <p className="text-[#49E46A] text-sm mt-1">
+              {order.time}
+            </p>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
