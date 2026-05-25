@@ -11,6 +11,8 @@ export default function GAKopiLandingPage() {
   const [address, setAddress] = useState("");
   const [orderComplete, setOrderComplete] = useState(false);
 
+  const [liveOrders, setLiveOrders] = useState<any[]>([]);
+
   // MUSIC
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -20,37 +22,68 @@ export default function GAKopiLandingPage() {
       name: "Americano",
       price: "8K",
       image:
-        "https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=1887&auto=format&fit=crop",
+        "/americano.jpeg",
     },
     {
       name: "Kopi Krim",
       price: "10K",
-      image:
-        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop",
+      image: "/Krim.jpeg",
     },
     {
       name: "Kopi Aren",
       price: "12K",
-      image:
-        "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=1887&auto=format&fit=crop",
+      image: "/aren.jpeg",
     },
     {
       name: "Kopi Pandan",
       price: "10K",
-      image:
-        "https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=1887&auto=format&fit=crop",
+      image: "/pandan.jpeg",
     },
     {
       name: "Butterscotch Latte",
       price: "12K",
-      image:
-        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1887&auto=format&fit=crop",
+      image: "/butterscoth.jpeg",
     },
   ];
 
   // COMPLETE ORDER
+  // COMPLETE ORDER
   const handleCompleteOrder = () => {
+
+    // LIVE ORDER
+    const newOrder = {
+      id: Date.now(),
+      name: selectedItem?.name,
+      time: "baru saja",
+      closing: false,
+    };
+
+    setLiveOrders((prev) => [...prev, newOrder]);
+
+    setTimeout(() => {
+
+      // PLAY EXIT ANIMATION
+      setLiveOrders((prev) =>
+        prev.map((o) =>
+          o.id === newOrder.id
+            ? { ...o, closing: true }
+            : o
+        )
+      );
+
+      // REMOVE AFTER ANIMATION
+      setTimeout(() => {
+        setLiveOrders((prev) =>
+          prev.filter((o) => o.id !== newOrder.id)
+        );
+      }, 500);
+
+    }, 4000);
+
+    // CLOSE POPUP
     setSelectedItem(null);
+
+    // SUCCESS STATE
     setOrderComplete(true);
 
     setTimeout(() => {
@@ -86,7 +119,7 @@ export default function GAKopiLandingPage() {
 
       {/* NAVBAR */}
       <header className="fixed top-0 left-0 w-full z-50 px-3 sm:px-5 lg:px-10 py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm flex items-center justify-between gap-3">
 
           {/* LOGO */}
           <h1 className="text-lg sm:text-2xl font-black tracking-widest uppercase leading-none">
@@ -130,8 +163,8 @@ export default function GAKopiLandingPage() {
 
       {/* HOME */}
       {activeSection === "home" && (
-        <section className="relative z-10 min-h-screen flex items-center px-5 pt-32 pb-16 lg:px-10">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+        <section className="relative z-10 min-h-screen flex items-start px-5 pt-32 pb-16 lg:px-10">
+          <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
 
             {/* LEFT */}
             <div>
@@ -174,14 +207,14 @@ export default function GAKopiLandingPage() {
               <div className="flex flex-wrap gap-4 mt-10">
                 <button
                   onClick={() => setActiveSection("menu")}
-                  className="px-4 sm:px-5 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-[#49E46A] hover:text-black transition text-sm"
+                  className="px-4 sm:px-5 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-[#49E46A] hover:text-black transition text-sm"
                 >
                   ☕ Menu Kopi
                 </button>
 
                 <button
                   onClick={() => setActiveSection("lokasi")}
-                  className="px-4 sm:px-5 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-[#49E46A] hover:text-black transition text-sm"
+                  className="px-4 sm:px-5 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-[#49E46A] hover:text-black transition text-sm"
                 >
                   📍 Lokasi Cafe
                 </button>
@@ -191,9 +224,9 @@ export default function GAKopiLandingPage() {
             {/* RIGHT IMAGE */}
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop"
+                src="/homekopi.jpeg"
                 alt="Coffee"
-                className="rounded-[32px] shadow-2xl h-[300px] sm:h-[420px] lg:h-[560px] w-full object-cover"
+                className="rounded-[32px] shadow-lg h-[300px] sm:h-[420px] lg:h-[560px] w-full object-cover"
               />
             </div>
           </div>
@@ -225,7 +258,7 @@ export default function GAKopiLandingPage() {
               {menuItems.map((item, index) => (
                 <div
                   key={index}
-                  className="bg-white/5 backdrop-blur-xl rounded-[28px] overflow-hidden border border-white/10 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.25)] transition-all duration-300"
+                  className="bg-white/5 backdrop-blur-sm rounded-[28px] overflow-hidden border border-white/10 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.25)] transition-all duration-300"
                 >
                   <img
                     src={item.image}
@@ -246,7 +279,11 @@ export default function GAKopiLandingPage() {
 
                     {/* ORDER BUTTON */}
                     <button
-                      onClick={() => setSelectedItem(item)}
+                      onClick={() => {
+
+                        setSelectedItem(item);
+
+                      }}
                       className="w-full mt-5 bg-[#49E46A] text-black py-3 rounded-full font-bold hover:scale-105 transition"
                     >
                       Order Sekarang
@@ -260,7 +297,7 @@ export default function GAKopiLandingPage() {
             <div className="flex justify-center mt-16">
               <button
                 onClick={() => setActiveSection("home")}
-                className="px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-[#49E46A] hover:text-black transition"
+                className="px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-[#49E46A] hover:text-black transition"
               >
                 ← Kembali Home
               </button>
@@ -288,7 +325,7 @@ export default function GAKopiLandingPage() {
               dan cocok buat santai malam.
             </p>
 
-            <div className="rounded-[32px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl p-5">
+            <div className="rounded-[32px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm p-5">
               <iframe
                 src="https://maps.google.com/maps?q=samarinda&t=&z=13&ie=UTF8&iwloc=&output=embed"
                 width="100%"
@@ -301,7 +338,7 @@ export default function GAKopiLandingPage() {
             <div className="flex justify-center mt-16">
               <button
                 onClick={() => setActiveSection("home")}
-                className="px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-[#49E46A] hover:text-black transition"
+                className="px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-[#49E46A] hover:text-black transition"
               >
                 ← Kembali Home
               </button>
@@ -314,7 +351,7 @@ export default function GAKopiLandingPage() {
       {selectedItem && (
         <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-5">
 
-          <div className="w-full max-w-lg bg-[#101915] border border-white/10 rounded-[32px] p-8">
+          <div className=" w-full max-w-lg bg-[#101915] border border-white/10 rounded-[32px] p-8 pb-32 max-h-[90vh] overflow-y-auto">
 
             <h2 className="text-3xl font-black mb-2">
               Checkout
@@ -459,19 +496,19 @@ export default function GAKopiLandingPage() {
                   href={`https://wa.me/6281234567890?text=${encodeURIComponent(
                     `Halo GA KOPI
 
-Saya ingin order:
+                      Saya ingin order:
 
-Menu: ${selectedItem.name}
-Harga: ${selectedItem.price}
+                      Menu: ${selectedItem.name}
+                      Harga: ${selectedItem.price}
 
-Pembayaran: ${paymentMethod}
+                      Pembayaran: ${paymentMethod}
 
-Metode: ${deliveryMethod}
+                      Metode: ${deliveryMethod}
 
-Alamat:
-${address || "-"}
+                      Alamat:
+                      ${address || "-"}
 
-Terima kasih.`
+                      Terima kasih.`
                   )}`}
                   target="_blank"
                   className="flex-1 py-4 rounded-full bg-[#49E46A] text-black font-black text-center"
@@ -494,7 +531,7 @@ Terima kasih.`
       {/* SUCCESS POPUP */}
       {orderComplete && (
         <div className="fixed top-10 left-1/2 -translate-x-1/2 z-[200]">
-          <div className="bg-[#49E46A] text-black px-8 py-5 rounded-2xl shadow-2xl text-center font-bold">
+          <div className="bg-[#49E46A] text-black px-8 py-5 rounded-2xl shadow-lg text-center font-bold">
             ✅ Order Berhasil
             <p className="text-sm mt-1">
               Silakan datang ke GA KOPI
@@ -511,7 +548,7 @@ Terima kasih.`
           onClick={toggleMusic}
           className="group"
         >
-          <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-2xl border border-white/10 flex items-center justify-center shadow-2xl hover:bg-[#49E46A]/10 hover:border-[#49E46A]/40 transition-all duration-300">
+          <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-2xl border border-white/10 flex items-center justify-center shadow-lg hover:bg-[#49E46A]/10 hover:border-[#49E46A]/40 transition-all duration-300">
 
             {/* OFF STATE */}
             {!isPlaying ? (
@@ -575,6 +612,40 @@ Terima kasih.`
       <audio ref={audioRef} loop>
         <source src="/Naruto - Afternoon of Konoha.mp3" type="audio/mpeg" />
       </audio>
+      
+      {/* LIVE ORDER POPUP */}
+        <div className="fixed bottom-24 left-5 z-[9999] flex flex-col gap-3">
+          {liveOrders.map((order) => (
+            <div
+              key={order.id}
+              className={`
+        px-5 py-4
+        rounded-2xl
+        bg-black/70
+        backdrop-blur-xl
+        border border-white/10
+        shadow-2xl
+        min-w-[220px]
+        ${order.closing
+                  ? "animate-slideDown"
+                  : "animate-slideUp"
+                }
+      `}
+            >
+              <p className="text-white/60 text-xs">
+                Baru saja order
+              </p>
+
+              <h3 className="font-bold text-white mt-1">
+                ☕ {order.name}
+              </h3>
+
+              <p className="text-[#49E46A] text-sm mt-1">
+                {order.time}
+              </p>
+            </div>
+          ))}
+        </div>
     </main>
   );
 }
