@@ -137,7 +137,7 @@ export default function GAKopiLandingPage() {
             />
 
             <h1 className="text-lg sm:text-2xl font-black tracking-widest uppercase leading-none">
-              GA KOPI
+              GA <span className="text-[#39FF6A]">KOPI</span>
             </h1>
           </div>
 
