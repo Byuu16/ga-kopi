@@ -6,6 +6,7 @@ export default function GAKopiLandingPage() {
   const [activeSection, setActiveSection] = useState("home");
 
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [bulkOrderOpen, setBulkOrderOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("QRIS");
   const [deliveryMethod, setDeliveryMethod] = useState("Pickup");
   const [address, setAddress] = useState("");
@@ -36,17 +37,27 @@ export default function GAKopiLandingPage() {
     },
     {
       name: "Kopi Pandan",
-      price: "10K",
+      price: "15K",
       image: "/pandan.jpeg",
     },
     {
       name: "Butterscotch Latte",
-      price: "12K",
+      price: "15K",
       image: "/butterscoth.jpeg",
     },
+    {
+      name: "classic Latte",
+      price: "12K",
+      image: "/Kopi classic.jpeg",
+    },
   ];
+  const [bulkItems, setBulkItems] = useState(
+    menuItems.map((item) => ({
+      ...item,
+      qty: 0,
+    }))
+  );
 
-  // COMPLETE ORDER
   // COMPLETE ORDER
   const handleCompleteOrder = () => {
 
@@ -86,9 +97,19 @@ export default function GAKopiLandingPage() {
     // SUCCESS STATE
     setOrderComplete(true);
 
+    // RESET BULK ITEMS
+    setBulkItems(
+      menuItems.map((item) => ({
+        ...item,
+        qty: 0,
+      }))
+    );
+
+    // HIDE SUCCESS ALERT
     setTimeout(() => {
       setOrderComplete(false);
     }, 3000);
+
   };
 
   // MUSIC TOGGLE
@@ -104,6 +125,42 @@ export default function GAKopiLandingPage() {
 
     setIsPlaying(!isPlaying);
   };
+
+  // INCREASE
+  const increaseQty = (name: string) => {
+    setBulkItems((prev) =>
+      prev.map((item) =>
+        item.name === name
+          ? { ...item, qty: item.qty + 1 }
+          : item
+      )
+    );
+  };
+
+  // DECREASE
+  const decreaseQty = (name: string) => {
+    setBulkItems((prev) =>
+      prev.map((item) =>
+        item.name === name && item.qty > 0
+          ? { ...item, qty: item.qty - 1 }
+          : item
+      )
+    );
+  };
+
+  // TOTAL
+  const totalBulkPrice = bulkItems.reduce(
+    (total, item) =>
+      total +
+      parseInt(item.price.replace("K", "")) * item.qty,
+    0
+  );
+
+  // TOTAL ITEM
+  const totalBulkItems = bulkItems.reduce(
+    (total, item) => total + item.qty,
+    0
+  );
 
   return (
     <main className="min-h-screen bg-[#07150F] text-white overflow-hidden relative">
@@ -263,8 +320,7 @@ export default function GAKopiLandingPage() {
               </h2>
 
               <p className="text-white/70 max-w-2xl mx-auto text-sm sm:text-base">
-                Pilihan kopi terbaik untuk menemani
-                nongkrong santai dan obrolan malam.
+
               </p>
             </div>
 
@@ -294,12 +350,18 @@ export default function GAKopiLandingPage() {
 
                     {/* ORDER BUTTON */}
                     <button
-                      onClick={() => {
-
-                        setSelectedItem(item);
-
-                      }}
-                      className="w-full mt-5 bg-[#49E46A] text-black py-3 rounded-full font-bold hover:scale-105 transition"
+                      onClick={() => setSelectedItem(item)}
+                      className="
+    w-full
+    mt-5
+    bg-[#49E46A]
+    text-black
+    py-4
+    rounded-full
+    font-black
+    hover:scale-105
+    transition-all duration-300
+  "
                     >
                       Order Sekarang
                     </button>
@@ -389,11 +451,40 @@ export default function GAKopiLandingPage() {
                   </p>
                 </div>
 
-                <img
-                  src={selectedItem.image}
-                  alt=""
-                  className="w-20 h-20 rounded-2xl object-cover"
-                />
+                {selectedItem.name.includes("Bulk Order") ? (
+
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {bulkItems
+                      .filter((item) => item.qty > 0)
+                      .map((item, index) => (
+                        <div
+                          key={index}
+                          className="
+          px-3
+          py-2
+          rounded-xl
+          bg-[#49E46A]/10
+          border
+          border-[#49E46A]/20
+          text-sm
+          font-bold
+          text-[#49E46A]
+        "
+                        >
+                          {item.name} × {item.qty}
+                        </div>
+                      ))}
+                  </div>
+
+                ) : (
+
+                  <img
+                    src={selectedItem.image}
+                    alt={selectedItem.name}
+                    className="w-24 h-24 object-cover rounded-2xl"
+                  />
+
+                )}
               </div>
             </div>
 
@@ -661,6 +752,273 @@ export default function GAKopiLandingPage() {
           </div>
         ))}
       </div>
+
+      {/* BULK ORDER BUTTON */}
+      {activeSection === "menu" && (
+        <button
+          onClick={() => setBulkOrderOpen(true)}
+          className="
+      fixed
+      bottom-38
+      right-4
+      z-50
+      w-16
+      h-16
+      rounded-full
+      bg-white/10
+      backdrop-blur-xl
+      border border-white/10
+      hover:border-[#49E46A]/50
+      hover:scale-110
+      transition-all
+      duration-300
+      flex
+      items-center
+      justify-center
+      shadow-[0_0_25px_rgba(73,228,106,0.15)]
+    "
+        >
+          <div className="relative">
+            <span className="text-2xl">
+              🛒
+            </span>
+
+            {/* COUNTER */}
+            <div
+              className="
+          absolute
+          -top-2
+          -right-2
+          min-w-[20px]
+          h-5
+          px-1
+          rounded-full
+          bg-[#49E46A]
+          text-black
+          text-[10px]
+          font-black
+          flex
+          items-center
+          justify-center
+        "
+            >
+              {bulkItems.filter((item) => item.qty > 0).length}
+            </div>
+          </div>
+        </button>
+      )}
+
+      {/* BULK ORDER POPUP */}
+      {bulkOrderOpen && (
+        <div className="fixed inset-0 z-[999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+
+          <div
+            className="
+        w-full
+        max-w-2xl
+        rounded-[32px]
+        border border-white/10
+        bg-[#07110B]
+        p-6
+        max-h-[90vh]
+        overflow-y-auto
+      "
+          >
+
+            {/* HEADER */}
+            <div className="flex items-center justify-between mb-8">
+
+              <div>
+                <h2 className="text-4xl font-black">
+                  Pesan Banyak
+                </h2>
+
+                <p className="text-white/60 mt-2">
+                  Pilih beberapa menu sekaligus
+                </p>
+              </div>
+
+              <button
+                onClick={() => setBulkOrderOpen(false)}
+                className="
+            w-12 h-12
+            rounded-full
+            bg-white/10
+            hover:bg-red-500
+            transition
+          "
+              >
+                ✕
+              </button>
+
+            </div>
+
+            {/* MENU LIST */}
+            <div className="space-y-4">
+
+              {bulkItems.map((item, index) => (
+
+                <div
+                  key={index}
+                  className="
+              flex
+              items-center
+              justify-between
+              rounded-3xl
+              border border-white/10
+              bg-white/5
+              p-4
+            "
+                >
+
+                  <div className="flex items-center gap-4">
+
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="
+                          w-16
+                          h-16
+                          min-w-[64px]
+                          rounded-2xl
+                          object-cover
+                          object-center
+                          bg-black/20
+                        "
+                    />
+
+                    <div>
+
+                      <div className="flex-1 min-w-0">
+
+                        <h3
+                          className="
+    font-black
+    text-sm
+    sm:text-lg
+    leading-tight
+    line-clamp-2
+  "
+                        >
+                          {item.name}
+                        </h3>
+
+                        <p className="text-[#49E46A] font-bold">
+                          {item.price}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  {/* QTY */}
+                  <div className="flex items-center gap-3">
+
+                    <button
+                      onClick={() => decreaseQty(item.name)}
+                      className="
+                  w-10 h-10
+                  rounded-full
+                  bg-white/10
+                "
+                    >
+                      −
+                    </button>
+
+                    <span className="w-8 text-center font-black">
+                      {item.qty}
+                    </span>
+
+                    <button
+                      onClick={() => increaseQty(item.name)}
+                      className="
+                  w-10 h-10
+                  rounded-full
+                  bg-[#49E46A]
+                  text-black
+                "
+                    >
+                      +
+                    </button>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+            {/* FOOTER */}
+            <div className="mt-8 border-t border-white/10 pt-6">
+
+              <div className="flex items-center justify-between mb-6">
+
+                <div>
+
+                  <p className="text-white/60">
+                    Total Item
+                  </p>
+
+                  <h3 className="text-2xl font-black">
+                    {totalBulkItems} Item
+                  </h3>
+
+                </div>
+
+                <div className="text-right">
+
+                  <p className="text-white/60">
+                    Total
+                  </p>
+
+                  <h3 className="text-4xl font-black text-[#49E46A]">
+                    {totalBulkPrice}K
+                  </h3>
+
+                </div>
+
+              </div>
+
+              <button
+                onClick={() => {
+                  const selectedBulkItems = bulkItems.filter(
+                    (item) => item.qty > 0
+                  );
+
+                  if (selectedBulkItems.length === 0) return;
+
+                  setBulkOrderOpen(false);
+
+                  setSelectedItem({
+                    name: `Bulk Order (${totalBulkItems} Item)`,
+                    price: `${totalBulkPrice}K`,
+                    image: "/GA.jpeg",
+                  });
+                }}
+                className="
+    w-full
+    py-5
+    rounded-2xl
+    bg-[#49E46A]
+    text-black
+    font-black
+    text-lg
+    hover:scale-[1.02]
+    transition-all duration-300
+  "
+              >
+                Checkout Sekarang
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
     </main>
   );
 }
