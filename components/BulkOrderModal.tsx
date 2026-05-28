@@ -28,15 +28,15 @@ export default function BulkOrderModal({
     <div className="fixed inset-0 z-[999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="w-full max-w-2xl rounded-[32px] border border-white/10 bg-[#07110B] p-6 max-h-[90vh] overflow-y-auto">
         {/* HEADER */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-start justify-between mb-8 gap-4">
           <div>
-            <h2 className="text-4xl font-black">Pesan Banyak</h2>
-            <p className="text-white/70 mt-2">Pilih beberapa menu sekaligus</p>
+            <h2 className="text-3xl sm:text-4xl font-black leading-tight">Pesan Banyak</h2>
+            <p className="text-white/70 mt-2 text-sm sm:text-base">Pilih beberapa menu sekaligus</p>
           </div>
           <button
             onClick={() => setBulkOrderOpen(false)}
             aria-label="Tutup Keranjang"
-            className="w-12 h-12 rounded-full bg-white/10 hover:bg-red-500 hover:text-white transition"
+            className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center rounded-full bg-white/10 hover:bg-red-500 hover:text-white transition"
           >
             ✕
           </button>
@@ -47,9 +47,9 @@ export default function BulkOrderModal({
           {bulkItems.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between rounded-3xl border border-white/10 bg-white/5 p-4"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 w-full sm:w-auto">
                 <div className="relative w-16 h-16 min-w-[64px] rounded-2xl overflow-hidden bg-black/20">
                   <Image
                     src={item.image}
@@ -59,33 +59,34 @@ export default function BulkOrderModal({
                     sizes="64px"
                   />
                 </div>
-                <div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-black text-sm sm:text-lg leading-tight line-clamp-2">
-                      {item.name}
-                    </h3>
-                    <p className="text-[#49E46A] font-bold">{item.price}</p>
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-black text-base sm:text-lg leading-tight line-clamp-2">
+                    {item.name}
+                  </h3>
+                  <p className="text-[#49E46A] font-bold mt-1">{item.price}</p>
                 </div>
               </div>
 
               {/* QTY */}
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => decreaseQty(item.name)}
-                  aria-label={`Kurangi kuantitas ${item.name}`}
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition"
-                >
-                  −
-                </button>
-                <span className="w-8 text-center font-black">{item.qty}</span>
-                <button
-                  onClick={() => increaseQty(item.name)}
-                  aria-label={`Tambah kuantitas ${item.name}`}
-                  className="w-10 h-10 rounded-full bg-[#49E46A] text-black hover:scale-105 transition"
-                >
-                  +
-                </button>
+              <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-1 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-none border-white/10">
+                <span className="text-white/50 text-sm font-semibold sm:hidden">Kuantitas:</span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => decreaseQty(item.name)}
+                    aria-label={`Kurangi kuantitas ${item.name}`}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition text-lg"
+                  >
+                    −
+                  </button>
+                  <span className="w-8 text-center font-black">{item.qty}</span>
+                  <button
+                    onClick={() => increaseQty(item.name)}
+                    aria-label={`Tambah kuantitas ${item.name}`}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#49E46A] text-black hover:scale-105 transition text-lg"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             </div>
           ))}
